@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">192.168.44.85:5174</domain>
+        <!-- 添加你需要允许明文访问的其他域名 -->
+    </domain-config>
+</network-security-config>
