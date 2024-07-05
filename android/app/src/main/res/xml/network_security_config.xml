@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <base-config cleartextTrafficPermitted="true"/>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.44.85:5174</domain>
+        <domain includeSubdomains="true">192.168.44.86:5174</domain>
+        <domain includeSubdomains="true">192.168.44.86:5173</domain>
+
         <!-- 添加你需要允许明文访问的其他域名 -->
     </domain-config>
 </network-security-config>
