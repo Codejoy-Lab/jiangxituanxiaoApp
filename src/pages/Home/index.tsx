@@ -41,7 +41,7 @@ export default () => {
           styles.content,
           {
             width: Dimensions.get('screen').width,
-            height: Dimensions.get('screen').height - 100,
+            height: '81%',
           },
         ]}>
         {activeModule.title == '光雕投影' ? (
@@ -55,7 +55,7 @@ export default () => {
           styles.bottomBar,
           {
             width: Dimensions.get('screen').width,
-            height: 100,
+            height: '15%',
           },
         ]}>
         {list.map(item => {
@@ -66,7 +66,20 @@ export default () => {
               onPress={() => {
                 setActiveModule(item);
               }}>
-              <Text style={styles.text}>{item.title}</Text>
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    color:
+                      activeModule.title === item.title ? '#1677ff' : '#000',
+                    fontSize: Dimensions.get('screen').height * 0.02,
+                    fontWeight:
+                      activeModule.title === item.title ? 'bold' : '500',
+                    marginBottom: activeModule.title === item.title ? 20 : 0,
+                  },
+                ]}>
+                {item.title}
+              </Text>
             </TouchableOpacity>
           );
         })}
@@ -76,7 +89,6 @@ export default () => {
 };
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     backgroundColor: '#e3e3e3',
     justifyContent: 'center',
   },
@@ -95,8 +107,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100%',
   },
   text: {
-    color: '#000',
+    // color: '#000',
   },
 });
