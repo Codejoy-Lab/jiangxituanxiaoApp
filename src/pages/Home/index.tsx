@@ -4,13 +4,18 @@ import {
   StyleSheet,
   Dimensions,
   Text,
+  Image,
   TouchableOpacity,
 } from 'react-native';
 import Map from '../Map';
 import Movie from '../Movie';
 import Screen from '../Screen';
 export default () => {
-  const list = [{title: '光雕投影'}, {title: '滑轨屏'}, {title: 'Cave影片'}];
+  const list = [
+    {title: '光雕投影', image: require('../../assets/icons/光雕投影.png')},
+    {title: '滑轨屏', image: require('../../assets/icons/滑轨屏.png')},
+    {title: 'Cave影片', image: require('../../assets/icons/cave影片.png')},
+  ];
   const [activeModule, setActiveModule] = useState({title: '光雕投影'});
   const {width, height} = Dimensions.get('screen');
   const [renderKey, setRnederKey] = useState(Math.random());
@@ -66,16 +71,21 @@ export default () => {
               onPress={() => {
                 setActiveModule(item);
               }}>
+              <Image
+                style={{height: '60%', width: 60}}
+                source={item.image}
+                resizeMode="contain"
+              />
               <Text
                 style={[
-                  styles.text,
                   {
+                    marginLeft: 10,
                     color:
                       activeModule.title === item.title ? '#1677ff' : '#000',
                     fontSize: Dimensions.get('screen').height * 0.02,
                     fontWeight:
                       activeModule.title === item.title ? 'bold' : '500',
-                    marginBottom: activeModule.title === item.title ? 20 : 0,
+                    // marginBottom: activeModule.title === item.title ? 20 : 0,
                   },
                 ]}>
                 {item.title}

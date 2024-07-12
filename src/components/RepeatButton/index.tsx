@@ -10,7 +10,8 @@ export default (props: {style: any; onRepeat: () => void}) => {
     <TouchableOpacity style={style} onPress={hanlePress}>
       <Image
         style={{width: '100%', height: '100%'}}
-        source={require('../../assets/repeat.png')}
+        source={require('../../assets/icons/repeat.png')}
+        resizeMode="contain"
       />
     </TouchableOpacity>
   );

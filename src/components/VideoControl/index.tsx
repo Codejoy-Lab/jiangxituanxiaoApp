@@ -16,10 +16,15 @@ export default (props: {
       {isPlaying ? (
         <Image
           style={{width: '100%', height: '100%'}}
-          source={require('../../assets/pause.png')}
+          source={require('../../assets/icons/pause.png')}
+          resizeMode="contain"
         />
       ) : (
-        <Image  style={{width: '100%', height: '100%'}} source={require('../../assets/play.png')} />
+        <Image
+          style={{width: '100%', height: '100%'}}
+          source={require('../../assets/icons/play.png')}
+          resizeMode="contain"
+        />
       )}
     </TouchableOpacity>
   );
