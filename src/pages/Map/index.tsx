@@ -1,12 +1,13 @@
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 import MapEcharts from '../../components/MapEcharts';
 import RepeatButton from '../../components/RepeatButton';
 import VideoControl from '../../components/VideoControl';
-import React, {useEffect} from 'react';
-
+import React, {useEffect, useState} from 'react';
+import {sendCommand} from '../../request/api';
 export default (props: {isLandScape: boolean}) => {
   const {isLandScape} = props;
- 
+  const [regionName, setRegionName] = useState('无');
+  const [isPlaying, setIsPlaying] = useState(false);
   function isLandScapeChangeValue<T>(
     landScapeValue: T,
     unLandScapeValue: T,
@@ -33,7 +34,18 @@ export default (props: {isLandScape: boolean}) => {
             width: isLandScapeChangeValue('68%', '100%'),
           },
         ]}>
-        <MapEcharts />
+        <MapEcharts
+          onChange={(data: {regionName: React.SetStateAction<string>}) => {
+            if (data.regionName != regionName) {
+              setRegionName(data.regionName);
+              setIsPlaying(false);
+            } else {
+              // 取消选择
+              console.log('取消选择');
+              setRegionName('');
+            }
+          }}
+        />
       </View>
       <View
         style={[
@@ -43,14 +55,49 @@ export default (props: {isLandScape: boolean}) => {
             width: isLandScapeChangeValue('30%', '100%'),
           },
         ]}>
-        <View style={[styles.video]}></View>
+        <View
+          style={[styles.video]}
+          onLayout={e => {
+            console.log(e.nativeEvent.layout);
+          }}>
+          {/* <Image source={require('../../assets/数字沙盘-先导片.jpg')} /> */}
+          <Image
+            source={require('../../assets/数字沙盘-先导片.png')}
+            style={{
+              width: '100%',
+              height: '100%',
+              overflow: 'hidden',
+              resizeMode: 'cover',
+              borderRadius: 10,
+            }}
+          />
+        </View>
         <View style={styles.controlRow}>
           <VideoControl
+            isPlaying={isPlaying}
             style={{width: 30, height: 30}}
-            onChange={v => {}}></VideoControl>
+            onChange={v => {
+              sendCommand({
+                name:
+                  regionName !== '无'
+                    ? `${regionName}.mp4`
+                    : `数字沙盘先导片v14.mp4`,
+                command: v ? 'start_play' : 'stop_play',
+              });
+              setIsPlaying(v);
+            }}
+          />
           <RepeatButton
             style={{width: 30, height: 30}}
-            onRepeat={() => {}}></RepeatButton>
+            onRepeat={() => {
+              sendCommand({
+                name: regionName
+                  ? `${regionName}.mp4`
+                  : `数字沙盘先导片v14.mp4`,
+                command: 'resume_play',
+              });
+            }}
+          />
         </View>
       </View>
     </View>
@@ -62,7 +109,7 @@ const styles = StyleSheet.create({
     height: '100%',
     // flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#e3e3e3',
+    backgroundColor: '#000',
     padding: '2%',
   },
   option: {
@@ -75,7 +122,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '80%',
     borderRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    // 阴影的模糊半径
+    shadowOpacity: 0.8,
+    // 阴影的扩散半径
+    shadowRadius: 4,
   },
   map: {
     borderRadius: 10,
@@ -88,7 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     // paddingVertical: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
     borderRadius: 10,
   },
 });

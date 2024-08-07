@@ -1,14 +1,40 @@
-import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 import VideoControl from '../../components/VideoControl';
 import RepeatButton from '../../components/RepeatButton';
+import {sendCommand} from '../../request/api';
+
 export default () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
   return (
     <View style={styles.container}>
-      <View style={styles.content}></View>
+      <View
+        style={styles.content}
+        onLayout={e => {
+          console.log(e.nativeEvent.layout);
+        }}></View>
       <View style={styles.controlRow}>
-        <VideoControl onChange={v => {}} style={{width: 50, height: 50}} />
-        <RepeatButton onRepeat={() => {}} style={{width: 50, height: 50}} />
+        <VideoControl
+          isPlaying={isPlaying}
+          onChange={v => {
+            sendCommand({
+              name: '滑轨屏v8.mp4',
+              command: v ? 'start_play' : 'stop_play',
+            });
+            setIsPlaying(v);
+          }}
+          style={{width: 50, height: 50}}
+        />
+        <RepeatButton
+          onRepeat={() => {
+            sendCommand({
+              name: '滑轨屏v8.mp4',
+              command: 'resume_play',
+            });
+          }}
+          style={{width: 50, height: 50}}
+        />
       </View>
     </View>
   );
@@ -18,13 +44,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     padding: '2%',
-    flexDirection:'column',
-    justifyContent:'space-between'
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   content: {
     width: '100%',
     height: '80%',
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
     borderRadius: 10,
   },
   controlRow: {
@@ -34,6 +60,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
   },
 });

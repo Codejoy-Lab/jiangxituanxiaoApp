@@ -16,5 +16,3 @@ export default (props: {style: any; onRepeat: () => void}) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({});

@@ -43,7 +43,6 @@ export default () => {
       key={renderKey}>
       <View
         style={[
-          styles.content,
           {
             width: Dimensions.get('screen').width,
             height: '81%',
@@ -81,7 +80,7 @@ export default () => {
                   {
                     marginLeft: 10,
                     color:
-                      activeModule.title === item.title ? '#1677ff' : '#000',
+                      activeModule.title === item.title ? '#1677ff' : '#fff',
                     fontSize: Dimensions.get('screen').height * 0.02,
                     fontWeight:
                       activeModule.title === item.title ? 'bold' : '500',
@@ -99,12 +98,11 @@ export default () => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e3e3e3',
+    backgroundColor: '#000',
     justifyContent: 'center',
   },
-  content: {},
   bottomBar: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
