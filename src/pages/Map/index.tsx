@@ -4,20 +4,36 @@ import RepeatButton from '../../components/RepeatButton';
 import VideoControl from '../../components/VideoControl';
 import React, {useEffect, useState} from 'react';
 import {sendCommand} from '../../request/api';
+import Config from 'react-native-config';
+// import {saveData, getData} from '../../utils';
+
 export default (props: {isLandScape: boolean}) => {
   const {isLandScape} = props;
   const [regionName, setRegionName] = useState('无');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(
+    `${Config.APP_API}/images/数字沙盘.png`,
+  );
   function isLandScapeChangeValue<T>(
     landScapeValue: T,
     unLandScapeValue: T,
   ): T {
     return isLandScape ? landScapeValue : unLandScapeValue;
   }
+  const initRegionName = async () => {
+    // const name = await getData('regionName');
+    // if (name) {
+    //   setRegionName(name);
+    // }
+  };
+  const initPlayStatus = async () => {
+    // const v = await getData('mapIsPlaying');
+    // setIsPlaying(v === '2' ? false : true);
+  };
   useEffect(() => {
-    console.log('isLandScape', isLandScape);
+    initRegionName();
+    initPlayStatus();
   }, [isLandScape]);
-
   return (
     <View
       style={[
@@ -35,14 +51,20 @@ export default (props: {isLandScape: boolean}) => {
           },
         ]}>
         <MapEcharts
-          onChange={(data: {regionName: React.SetStateAction<string>}) => {
+          onChange={(data: {regionName: string}) => {
             if (data.regionName != regionName) {
               setRegionName(data.regionName);
+              setSelectedImage(
+                `${Config.APP_API}/images/${data.regionName}.png`,
+              );
               setIsPlaying(false);
+              saveData('regionName', data.regionName);
             } else {
               // 取消选择
               console.log('取消选择');
               setRegionName('');
+              setSelectedImage(`${Config.APP_API}/images/数字沙盘.png`);
+              saveData('regionName', '');
             }
           }}
         />
@@ -60,9 +82,8 @@ export default (props: {isLandScape: boolean}) => {
           onLayout={e => {
             console.log(e.nativeEvent.layout);
           }}>
-          {/* <Image source={require('../../assets/数字沙盘-先导片.jpg')} /> */}
           <Image
-            source={require('../../assets/数字沙盘-先导片.png')}
+            source={{uri: selectedImage}}
             style={{
               width: '100%',
               height: '100%',
@@ -81,10 +102,12 @@ export default (props: {isLandScape: boolean}) => {
                 name:
                   regionName !== '无'
                     ? `${regionName}.mp4`
-                    : `数字沙盘先导片v14.mp4`,
+                    : '数字沙盘先导片v14.mp4',
                 command: v ? 'start_play' : 'stop_play',
+                module: '数字沙盘',
               });
               setIsPlaying(v);
+              // saveData('mapIsPlaying', v ? '1' : '2');
             }}
           />
           <RepeatButton
@@ -93,9 +116,11 @@ export default (props: {isLandScape: boolean}) => {
               sendCommand({
                 name: regionName
                   ? `${regionName}.mp4`
-                  : `数字沙盘先导片v14.mp4`,
+                  : '数字沙盘先导片v14.mp4',
                 command: 'resume_play',
+                module: '数字沙盘',
               });
+              // saveData('mapIsPlaying', '1');
             }}
           />
         </View>

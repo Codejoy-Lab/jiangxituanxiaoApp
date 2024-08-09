@@ -3,6 +3,7 @@ import {View, StyleSheet, Image} from 'react-native';
 import VideoControl from '../../components/VideoControl';
 import RepeatButton from '../../components/RepeatButton';
 import {sendCommand} from '../../request/api';
+import Config from 'react-native-config';
 
 export default () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -11,7 +12,7 @@ export default () => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require('../../assets/滑轨屏.png')}
+          source={{uri: `${Config.APP_API}/images/滑轨屏.png`}}
           style={{
             width: '100%',
             height: '100%',
@@ -28,6 +29,7 @@ export default () => {
             sendCommand({
               name: '滑轨屏v8.mp4',
               command: v ? 'start_play' : 'stop_play',
+              module: '滑轨屏',
             });
             setIsPlaying(v);
           }}
@@ -38,6 +40,7 @@ export default () => {
             sendCommand({
               name: '滑轨屏v8.mp4',
               command: 'resume_play',
+              module: '滑轨屏',
             });
           }}
           style={{width: 50, height: 50}}

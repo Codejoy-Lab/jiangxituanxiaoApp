@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "build:staging": "cd android && set ENVFILE=.env.staging && gradlew assembleRelease",
-    "build:prouction": "cd android && set ENVFILE=.env.prouction && gradlew assembleRelease",
+    "build:production": "cd android && set ENVFILE=.env.production && gradlew assembleRelease",
     "test": "jest"
   },
   "dependencies": {

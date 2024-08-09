@@ -12,11 +12,11 @@ import Movie from '../Movie';
 import Screen from '../Screen';
 export default () => {
   const list = [
-    {title: '光雕投影', image: require('../../assets/icons/光雕投影.png')},
+    {title: '数字沙盘', image: require('../../assets/icons/光雕投影.png')},
     {title: '滑轨屏', image: require('../../assets/icons/滑轨屏.png')},
-    {title: 'Cave影片', image: require('../../assets/icons/cave影片.png')},
+    {title: 'CAVE空间', image: require('../../assets/icons/cave影片.png')},
   ];
-  const [activeModule, setActiveModule] = useState({title: '光雕投影'});
+  const [activeModule, setActiveModule] = useState({title: '数字沙盘'});
   const {width, height} = Dimensions.get('screen');
   const [renderKey, setRnederKey] = useState(Math.random());
   const [isLandScape, setIsLandScape] = useState(width > height);
@@ -48,11 +48,11 @@ export default () => {
             height: '81%',
           },
         ]}>
-        {activeModule.title == '光雕投影' ? (
+        {activeModule.title == '数字沙盘' ? (
           <Map isLandScape={isLandScape} />
         ) : null}
         {activeModule.title == '滑轨屏' ? <Screen /> : null}
-        {activeModule.title == 'Cave影片' ? <Movie /> : null}
+        {activeModule.title == 'CAVE空间' ? <Movie /> : null}
       </View>
       <View
         style={[

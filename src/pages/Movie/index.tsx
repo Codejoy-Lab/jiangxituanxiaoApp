@@ -13,7 +13,10 @@ export default () => {
         style={styles.content}
         onLayout={e => {
           console.log(e.nativeEvent.layout);
-        }}></View>
+        }}>
+        {/* {列表} */}
+        <View></View>
+      </View>
       <View style={styles.controlRow}>
         <VideoControl
           isPlaying={isPlaying}
@@ -21,6 +24,7 @@ export default () => {
             sendCommand({
               name: '滑轨屏v8.mp4',
               command: v ? 'start_play' : 'stop_play',
+              module: 'CAVE空间',
             });
             setIsPlaying(v);
           }}
@@ -31,6 +35,7 @@ export default () => {
             sendCommand({
               name: '滑轨屏v8.mp4',
               command: 'resume_play',
+              module: 'CAVE空间',
             });
           }}
           style={{width: 50, height: 50}}
