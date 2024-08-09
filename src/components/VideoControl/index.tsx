@@ -1,14 +1,12 @@
-import {useState} from 'react';
-import {StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 
 export default (props: {
   style: any;
   onChange: (isPlaying: boolean) => void;
+  isPlaying: boolean;
 }) => {
-  const {style, onChange} = props;
-  const [isPlaying, setIsPlaying] = useState(false);
+  const {style, onChange, isPlaying = false} = props;
   const hanlePress = () => {
-    setIsPlaying(old => !old);
     onChange && onChange(!isPlaying);
   };
   return (
@@ -29,5 +27,3 @@ export default (props: {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({});

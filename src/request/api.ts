@@ -6,3 +6,9 @@ export const sendCommand = async (param: any) => {
 export const getCurrentRegionName = async () => {
   return req.get('/getCurrentRegionName');
 };
+export const getStatus = async () => {
+  return req.get('/getStatus');
+};
+export const updateAppStatus = async (param: any) => {
+  return req.post('/updateStatus', param);
+};

@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {} from 'react';
+import {Image, TouchableOpacity} from 'react-native';
 
 export default (props: {style: any; onRepeat: () => void}) => {
   const {style, onRepeat} = props;
@@ -16,5 +16,3 @@ export default (props: {style: any; onRepeat: () => void}) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({});

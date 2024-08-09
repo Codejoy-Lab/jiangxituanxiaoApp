@@ -7,12 +7,12 @@ import Config from 'react-native-config';
 
 export default (props: {status: any}) => {
   const {status} = props;
-  const [isPlaying, setIsPlaying] = useState(status.screen.isPlaying);
+  const [isPlaying, setIsPlaying] = useState(status.cave.isPlaying);
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Image
+        {/* <Image
           source={{uri: `${Config.APP_API}/images/滑轨屏.png`}}
           style={{
             width: '100%',
@@ -21,7 +21,7 @@ export default (props: {status: any}) => {
             resizeMode: 'cover',
             borderRadius: 10,
           }}
-        />
+        /> */}
       </View>
       <View style={styles.controlRow}>
         <VideoControl
@@ -34,7 +34,7 @@ export default (props: {status: any}) => {
             });
             updateAppStatus({
               ...status,
-              screen: {
+              cave: {
                 isPlaying: v,
               },
             });
@@ -52,7 +52,7 @@ export default (props: {status: any}) => {
             setIsPlaying(true);
             updateAppStatus({
               ...status,
-              screen: {
+              cave: {
                 isPlaying: true,
               },
             });
