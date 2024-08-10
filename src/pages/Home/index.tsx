@@ -12,6 +12,7 @@ import Map from '../Map';
 import Movie from '../Cave';
 import Screen from '../Screen';
 import {getStatus} from '../../request/api';
+import {initWS} from '../../request/ws';
 export default () => {
   const list = [
     {title: '数字沙盘', image: require('../../assets/icons/光雕投影.png')},
@@ -26,13 +27,16 @@ export default () => {
     map: {
       regionName: '无',
       isPlaying: false,
+      command: 'stop_play',
     },
     screen: {
       isPlaying: false,
+      command: 'stop_play',
     },
     cave: {
-      selected: '',
+      selected: {},
       isPlaying: false,
+      command: 'stop_play',
     },
   });
   console.log(renderKey);
@@ -58,6 +62,23 @@ export default () => {
       setIsLandScape(width > height);
     });
     return () => subscription.remove();
+  }, []);
+  const handleMessage = (message: any) => {
+    const data = JSON.parse(message);
+    console.log('ws message', data, data.command);
+    // 播放结束，通知客户端图标切换
+    setStatus(data);
+
+    // if (data.command === 'stop_play' && data.mark == 'done') {
+    //   updateStatus();
+    //   // let newStatus = {...status};
+    //   // newStatus[data.module].isPlaying = false;
+    //   // console.log(newStatus);
+    //   // setStatus(newStatus);
+    // }
+  };
+  useEffect(() => {
+    initWS(handleMessage);
   }, []);
   return (
     <View

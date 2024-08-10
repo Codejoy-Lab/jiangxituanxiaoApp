@@ -12,3 +12,6 @@ export const getStatus = async () => {
 export const updateAppStatus = async (param: any) => {
   return req.post('/updateStatus', param);
 };
+export const getPoint = async () => {
+  return req.get('/getPoint');
+};
