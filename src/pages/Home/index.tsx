@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -8,8 +9,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Map from '../Map';
-import Movie from '../Movie';
+import Movie from '../Cave';
 import Screen from '../Screen';
+import {getStatus} from '../../request/api';
+import {initWS} from '../../request/ws';
 export default () => {
   const list = [
     {title: '数字沙盘', image: require('../../assets/icons/光雕投影.png')},
@@ -20,16 +23,62 @@ export default () => {
   const {width, height} = Dimensions.get('screen');
   const [renderKey, setRnederKey] = useState(Math.random());
   const [isLandScape, setIsLandScape] = useState(width > height);
+  const [status, setStatus] = useState({
+    map: {
+      regionName: '无',
+      isPlaying: false,
+      command: 'stop_play',
+    },
+    screen: {
+      isPlaying: false,
+      command: 'stop_play',
+    },
+    cave: {
+      selected: {},
+      isPlaying: false,
+      command: 'stop_play',
+    },
+  });
   console.log(renderKey);
-
-  // 监听屏幕方向变化
+  const updateStatus = async () => {
+    getStatus().then(res => {
+      console.log(res.data);
+      if (res?.data) {
+        //  const {map, cave, screen} = res.data;
+        setStatus(res.data);
+      }
+    });
+  };
+  const handlePressTab = async (item: {title: string}) => {
+    setActiveModule(item);
+    updateStatus();
+  };
+  // 初始化
   useEffect(() => {
+    updateStatus();
     const subscription = Dimensions.addEventListener('change', () => {
       const {width, height} = Dimensions.get('screen');
       setRnederKey(Math.random());
       setIsLandScape(width > height);
     });
     return () => subscription.remove();
+  }, []);
+  const handleMessage = (message: any) => {
+    const data = JSON.parse(message);
+    console.log('ws message', data, data.command);
+    // 播放结束，通知客户端图标切换
+    setStatus(data);
+
+    // if (data.command === 'stop_play' && data.mark == 'done') {
+    //   updateStatus();
+    //   // let newStatus = {...status};
+    //   // newStatus[data.module].isPlaying = false;
+    //   // console.log(newStatus);
+    //   // setStatus(newStatus);
+    // }
+  };
+  useEffect(() => {
+    initWS(handleMessage);
   }, []);
   return (
     <View
@@ -49,10 +98,10 @@ export default () => {
           },
         ]}>
         {activeModule.title == '数字沙盘' ? (
-          <Map isLandScape={isLandScape} />
+          <Map isLandScape={isLandScape} status={status} />
         ) : null}
-        {activeModule.title == '滑轨屏' ? <Screen /> : null}
-        {activeModule.title == 'CAVE空间' ? <Movie /> : null}
+        {activeModule.title == '滑轨屏' ? <Screen status={status} /> : null}
+        {activeModule.title == 'CAVE空间' ? <Movie status={status} /> : null}
       </View>
       <View
         style={[
@@ -68,7 +117,7 @@ export default () => {
               key={item.title}
               style={styles.bar}
               onPress={() => {
-                setActiveModule(item);
+                handlePressTab(item);
               }}>
               <Image
                 style={{height: '60%', width: 60}}

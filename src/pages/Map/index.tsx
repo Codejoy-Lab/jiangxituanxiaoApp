@@ -1,16 +1,16 @@
+/* eslint-disable react-native/no-inline-styles */
 import {View, StyleSheet, Image} from 'react-native';
 import MapEcharts from '../../components/MapEcharts';
 import RepeatButton from '../../components/RepeatButton';
 import VideoControl from '../../components/VideoControl';
 import React, {useEffect, useState} from 'react';
-import {sendCommand} from '../../request/api';
 import Config from 'react-native-config';
-// import {saveData, getData} from '../../utils';
+import {sendCommand, updateAppStatus} from '../../request/api';
 
-export default (props: {isLandScape: boolean}) => {
-  const {isLandScape} = props;
-  const [regionName, setRegionName] = useState('无');
-  const [isPlaying, setIsPlaying] = useState(false);
+export default (props: {isLandScape: boolean; status: any}) => {
+  const {isLandScape, status} = props;
+  const [isPlaying, setIsPlaying] = useState(status.map.isPlaying);
+  const [regionName, setRegionName] = useState(status.map.regionName);
   const [selectedImage, setSelectedImage] = useState(
     `${Config.APP_API}/images/数字沙盘.png`,
   );
@@ -20,20 +20,22 @@ export default (props: {isLandScape: boolean}) => {
   ): T {
     return isLandScape ? landScapeValue : unLandScapeValue;
   }
-  const initRegionName = async () => {
-    // const name = await getData('regionName');
-    // if (name) {
-    //   setRegionName(name);
-    // }
-  };
-  const initPlayStatus = async () => {
-    // const v = await getData('mapIsPlaying');
-    // setIsPlaying(v === '2' ? false : true);
-  };
+
   useEffect(() => {
-    initRegionName();
-    initPlayStatus();
-  }, [isLandScape]);
+    setRegionName(status.map.regionName);
+    setIsPlaying(status.map.isPlaying);
+
+    if (status.map.mark === 'done') {
+      setIsPlaying(false);
+    }
+    if (status.map.regionName && status.map.regionName != '无') {
+      setSelectedImage(`${Config.APP_API}/images/${status.map.regionName}.png`);
+    } else {
+      console.log('11111', status.map);
+
+      setSelectedImage(`${Config.APP_API}/images/数字沙盘.png`);
+    }
+  }, [status]);
   return (
     <View
       style={[
@@ -52,19 +54,20 @@ export default (props: {isLandScape: boolean}) => {
         ]}>
         <MapEcharts
           onChange={(data: {regionName: string}) => {
-            if (data.regionName != regionName) {
+            console.log(data.regionName, regionName);
+
+            if (data.regionName != regionName && data.regionName != '无') {
               setRegionName(data.regionName);
+              console.log(`${Config.APP_API}/images/${data.regionName}.png`);
               setSelectedImage(
                 `${Config.APP_API}/images/${data.regionName}.png`,
               );
               setIsPlaying(false);
-              saveData('regionName', data.regionName);
             } else {
               // 取消选择
               console.log('取消选择');
               setRegionName('');
               setSelectedImage(`${Config.APP_API}/images/数字沙盘.png`);
-              saveData('regionName', '');
             }
           }}
         />
@@ -77,11 +80,7 @@ export default (props: {isLandScape: boolean}) => {
             width: isLandScapeChangeValue('30%', '100%'),
           },
         ]}>
-        <View
-          style={[styles.video]}
-          onLayout={e => {
-            console.log(e.nativeEvent.layout);
-          }}>
+        <View style={[styles.video]}>
           <Image
             source={{uri: selectedImage}}
             style={{
@@ -98,29 +97,58 @@ export default (props: {isLandScape: boolean}) => {
             isPlaying={isPlaying}
             style={{width: 30, height: 30}}
             onChange={v => {
-              sendCommand({
-                name:
-                  regionName !== '无'
-                    ? `${regionName}.mp4`
-                    : '数字沙盘先导片v14.mp4',
-                command: v ? 'start_play' : 'stop_play',
-                module: '数字沙盘',
+              // sendCommand({
+              //   name:
+              //     regionName !== '无'
+              //       ? `${regionName}.mp4`
+              //       : '数字沙盘先导片v14.mp4',
+              //   command: v ? 'start_play' : 'stop_play',
+              //   module: 'map',
+              //   regionName: regionName,
+              // });
+              // console.log('2222', regionName);
+
+              updateAppStatus({
+                ...status,
+                map: {
+                  isPlaying: v,
+                  command: v ? 'start_play' : 'stop_play',
+                  regionName,
+                  name:
+                    regionName !== '无'
+                      ? `${regionName}.mp4`
+                      : '数字沙盘先导片v14.mp4',
+                },
+                active: 'map',
               });
+
               setIsPlaying(v);
-              // saveData('mapIsPlaying', v ? '1' : '2');
             }}
           />
           <RepeatButton
             style={{width: 30, height: 30}}
             onRepeat={() => {
-              sendCommand({
-                name: regionName
-                  ? `${regionName}.mp4`
-                  : '数字沙盘先导片v14.mp4',
-                command: 'resume_play',
-                module: '数字沙盘',
+              // sendCommand({
+              //   name: regionName
+              //     ? `${regionName}.mp4`
+              //     : '数字沙盘先导片v14.mp4',
+              //   command: 'resume_play',
+              //   module: 'map',
+              // });
+              setIsPlaying(true);
+              updateAppStatus({
+                ...status,
+                map: {
+                  isPlaying: true,
+                  command: 'resume_play',
+                  regionName,
+                  name:
+                    regionName !== '无'
+                      ? `${regionName}.mp4`
+                      : '数字沙盘先导片v14.mp4',
+                },
+                active: 'map',
               });
-              // saveData('mapIsPlaying', '1');
             }}
           />
         </View>
