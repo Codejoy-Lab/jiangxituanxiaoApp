@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import VideoControl from '../../components/VideoControl';
@@ -52,38 +53,41 @@ export default (props: {status: any}) => {
         />
       </View>
       <View style={styles.controlRow}>
-        <VideoControl
-          isPlaying={isPlaying}
-          onChange={v => {
-            updateAppStatus({
-              ...status,
-              screen: {
-                isPlaying: v,
-                command: v ? 'start_play' : 'stop_play',
-                name: '滑轨屏v8.mp4',
-              },
-              active: 'screen',
-            });
-            setIsPlaying(v);
-          }}
-          style={{width: 50, height: 50}}
-        />
-        <RepeatButton
-          onRepeat={async () => {
-            //    await checkPoint();
-            setIsPlaying(true);
-            updateAppStatus({
-              ...status,
-              screen: {
-                isPlaying: true,
-                command: 'resume_play',
-                name: '滑轨屏v8.mp4',
-              },
-              active: 'screen',
-            });
-          }}
-          style={{width: 50, height: 50}}
-        />
+        {!isPlaying ? (
+          <VideoControl
+            isPlaying={isPlaying}
+            onChange={v => {
+              updateAppStatus({
+                ...status,
+                screen: {
+                  isPlaying: v,
+                  command: v ? 'start_play' : 'stop_play',
+                  name: '滑轨屏v8.mp4',
+                },
+                active: 'screen',
+              });
+              setIsPlaying(v);
+            }}
+            style={{width: 50, height: 50}}
+          />
+        ) : (
+          <RepeatButton
+            onRepeat={async () => {
+              //    await checkPoint();
+              setIsPlaying(true);
+              updateAppStatus({
+                ...status,
+                screen: {
+                  isPlaying: true,
+                  command: 'resume_play',
+                  name: '滑轨屏v8.mp4',
+                },
+                active: 'screen',
+              });
+            }}
+            style={{width: 50, height: 50}}
+          />
+        )}
       </View>
     </View>
   );

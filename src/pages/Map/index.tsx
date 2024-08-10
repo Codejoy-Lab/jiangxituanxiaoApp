@@ -56,7 +56,7 @@ export default (props: {isLandScape: boolean; status: any}) => {
           onChange={(data: {regionName: string}) => {
             console.log(data.regionName, regionName);
 
-            if (data.regionName != regionName) {
+            if (data.regionName != regionName && data.regionName != '无') {
               setRegionName(data.regionName);
               console.log(`${Config.APP_API}/images/${data.regionName}.png`);
               setSelectedImage(
