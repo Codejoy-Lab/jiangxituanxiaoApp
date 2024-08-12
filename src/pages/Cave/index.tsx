@@ -8,15 +8,15 @@ import {
 } from 'react-native';
 import VideoControl from '../../components/VideoControl';
 import RepeatButton from '../../components/RepeatButton';
-import {sendCommand, updateAppStatus} from '../../request/api';
-import Config from 'react-native-config';
+import {updateAppStatus} from '../../request/api';
+// import Config from 'react-native-config';
 export default (props: {status: any}) => {
   const {status} = props;
-  const [isPlaying, setIsPlaying] = useState(status.cave.isPlaying);
-  const [selectedVideo, setSelectedVideo] = useState(status.cave.selected);
+  const [isPlaying, setIsPlaying] = useState(status?.cave?.isPlaying);
+  const [selectedVideo, setSelectedVideo] = useState(status?.cave?.selected);
   useEffect(() => {
-    setIsPlaying(status.cave.isPlaying);
-    setSelectedVideo(status.cave.selected);
+    setIsPlaying(status?.cave?.isPlaying);
+    setSelectedVideo(status?.cave?.selected);
     if (status.cave.mark == 'done') {
       setIsPlaying(false);
     }
@@ -26,7 +26,7 @@ export default (props: {status: any}) => {
     updateAppStatus({
       ...status,
       cave: {
-        ...status.cave,
+        ...status?.cave,
         selected: item,
       },
     });
@@ -45,34 +45,35 @@ export default (props: {status: any}) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <ScrollView style={styles.list}>
-          {list.map((item, i) => {
-            const isSelected = selectedVideo.name == item.name;
-            return (
-              <TouchableOpacity
-                key={i}
-                style={[
-                  styles.videoitem,
-                  isSelected ? styles.selectedItem : {},
-                ]}
-                onPress={() => {
-                  handleSelected(item);
-                }}>
-                <Text
+        <View style={styles.list}>
+          <ScrollView horizontal={false}>
+            {list.map((item, i) => {
+              const isSelected = selectedVideo?.name == item?.name;
+              return (
+                <TouchableOpacity
+                  key={i}
                   style={[
-                    styles.listText,
-                    isSelected ? styles.selectedText : {},
-                  ]}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-        <View style={styles.videoArea}>
-          <Text></Text>
+                    styles.videoitem,
+                    isSelected ? styles.selectedItem : {},
+                  ]}
+                  onPress={() => {
+                    handleSelected(item);
+                  }}>
+                  <Text
+                    style={[
+                      styles.listText,
+                      isSelected ? styles.selectedText : {},
+                    ]}>
+                    {`${item.name}`}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
         </View>
-        {/* <Image
+
+        <View style={styles.videoArea}>
+          {/* <Image
           source={{uri: `${Config.APP_API}/images/滑轨屏.png`}}
           style={{
             width: '100%',
@@ -82,6 +83,7 @@ export default (props: {status: any}) => {
             borderRadius: 10,
           }}
         /> */}
+        </View>
       </View>
       <View style={styles.controlRow}>
         <VideoControl
@@ -132,11 +134,9 @@ const styles = StyleSheet.create({
   content: {
     width: '100%',
     height: '80%',
-    // backgroundColor: '#1a1a1a',
     borderRadius: 10,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    // backgroundColor: '#fff',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   controlRow: {
@@ -149,26 +149,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
   },
   list: {
-    width: '20%',
+    width: '48%',
     height: '100%',
     backgroundColor: '#1a1a1a',
-
     borderRadius: 10,
     padding: '2%',
+    flexDirection: 'column',
+  },
+  videoitem: {
+    height: 50,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+    borderRadius: 6,
   },
   videoArea: {
     width: '50%',
     height: '100%',
     backgroundColor: '#1a1a1a',
     borderRadius: 10,
-  },
-  videoitem: {
-    height: 50,
-    width: '30%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 20,
-    borderRadius: 6,
   },
   selectedItem: {
     borderWidth: 2,

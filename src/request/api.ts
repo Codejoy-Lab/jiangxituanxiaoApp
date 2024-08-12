@@ -15,3 +15,6 @@ export const updateAppStatus = async (param: any) => {
 export const getPoint = async () => {
   return req.get('/getPoint');
 };
+export const revertScreen = async () => {
+  return req.get('/revertScreen');
+};

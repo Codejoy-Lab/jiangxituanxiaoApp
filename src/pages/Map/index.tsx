@@ -5,12 +5,12 @@ import RepeatButton from '../../components/RepeatButton';
 import VideoControl from '../../components/VideoControl';
 import React, {useEffect, useState} from 'react';
 import Config from 'react-native-config';
-import {sendCommand, updateAppStatus} from '../../request/api';
+import {updateAppStatus} from '../../request/api';
 
 export default (props: {isLandScape: boolean; status: any}) => {
   const {isLandScape, status} = props;
-  const [isPlaying, setIsPlaying] = useState(status.map.isPlaying);
-  const [regionName, setRegionName] = useState(status.map.regionName);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [regionName, setRegionName] = useState('无');
   const [selectedImage, setSelectedImage] = useState(
     `${Config.APP_API}/images/数字沙盘.png`,
   );
@@ -22,16 +22,16 @@ export default (props: {isLandScape: boolean; status: any}) => {
   }
 
   useEffect(() => {
-    setRegionName(status.map.regionName);
-    setIsPlaying(status.map.isPlaying);
+    setRegionName(status?.map?.regionName);
+    setIsPlaying(status?.map?.isPlaying);
 
-    if (status.map.mark === 'done') {
+    if (status?.map?.mark === 'done') {
       setIsPlaying(false);
     }
-    if (status.map.regionName && status.map.regionName != '无') {
+    if (status?.map?.regionName && status?.map?.regionName != '无') {
       setSelectedImage(`${Config.APP_API}/images/${status.map.regionName}.png`);
     } else {
-      console.log('11111', status.map);
+      console.log('11111', status);
 
       setSelectedImage(`${Config.APP_API}/images/数字沙盘.png`);
     }

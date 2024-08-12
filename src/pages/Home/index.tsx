@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,13 +12,18 @@ import Map from '../Map';
 import Movie from '../Cave';
 import Screen from '../Screen';
 import {getStatus} from '../../request/api';
-import {initWS} from '../../request/ws';
+// import {initWS} from '../../request/ws';
+import Config from 'react-native-config';
+let timeId: any = '';
 export default () => {
   const list = [
     {title: '数字沙盘', image: require('../../assets/icons/光雕投影.png')},
     {title: '滑轨屏', image: require('../../assets/icons/滑轨屏.png')},
     {title: 'CAVE空间', image: require('../../assets/icons/cave影片.png')},
   ];
+
+  const wsRef = useRef<any>(null);
+  const [isConnected, setIsConnected] = useState(false);
   const [activeModule, setActiveModule] = useState({title: '数字沙盘'});
   const {width, height} = Dimensions.get('screen');
   const [renderKey, setRnederKey] = useState(Math.random());
@@ -40,9 +45,59 @@ export default () => {
     },
   });
   console.log(renderKey);
+  const connect = () => {
+    // if (isConnected) {
+    //   return;
+    // }
+    timeId = setInterval(() => {
+      console.log('1111111111');
+      console.log(wsRef.current);
+
+      if (!wsRef.current) {
+        // 如果socket不存在，则创建一个新的WebSocket实例
+        const ws = new WebSocket(Config.APP_WS_API);
+        console.log('ws', ws);
+        wsRef.current = ws;
+
+        wsRef.current.onopen = () => {
+          console.log('Reconnected successfully.');
+          setIsConnected(true);
+          clearInterval(timeId);
+        };
+        wsRef.current.onclose = () => {
+          wsRef.current = null;
+          setIsConnected(false);
+          console.log(' reconnect ');
+          // connect();
+          // setRnederKey(Math.random());
+        };
+        wsRef.current.onmessage = (event: WebSocketMessageEvent) => {
+          const {data} = event;
+          handleMessage(data);
+        };
+        wsRef.current.onerror = () => {
+          wsRef.current = null;
+          // setRnederKey(Math.random());
+          setIsConnected(false);
+          console.log(' reconnect ');
+          // connect();
+        };
+      }
+    }, 1000);
+  };
+
+  useEffect(() => {
+    connect();
+    return () => {
+      // 清理操作
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
   const updateStatus = async () => {
     getStatus().then(res => {
-      console.log(res.data);
+      console.log('init-----', res.data);
       if (res?.data) {
         //  const {map, cave, screen} = res.data;
         setStatus(res.data);
@@ -68,17 +123,9 @@ export default () => {
     console.log('ws message', data, data.command);
     // 播放结束，通知客户端图标切换
     setStatus(data);
-
-    // if (data.command === 'stop_play' && data.mark == 'done') {
-    //   updateStatus();
-    //   // let newStatus = {...status};
-    //   // newStatus[data.module].isPlaying = false;
-    //   // console.log(newStatus);
-    //   // setStatus(newStatus);
-    // }
   };
   useEffect(() => {
-    initWS(handleMessage);
+    // initWS(handleMessage);
   }, []);
   return (
     <View

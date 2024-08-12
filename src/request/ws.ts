@@ -1,10 +1,10 @@
 import Config from 'react-native-config';
-
+let timeId: any = '';
 export const initWS = (handleMessage: {
   (message: any): void;
   (arg0: WebSocketMessageEvent): void;
 }) => {
-  const socket = new WebSocket(Config.APP_WS_API);
+  let socket = new WebSocket(Config.APP_WS_API);
   socket.onopen = () => console.log('WebSocket Connected');
 
   socket.onmessage = message => {
@@ -13,5 +13,16 @@ export const initWS = (handleMessage: {
     handleMessage(message.data);
   };
 
-  socket.onclose = () => console.log('WebSocket Disconnected');
+  socket.onclose = () => {
+    console.log('WebSocket Disconnected');
+    console.log('is reconnecting');
+
+    timeId = setInterval(() => {
+      if (socket) {
+        clearInterval(timeId);
+        return;
+      }
+      socket = new WebSocket(Config.APP_WS_API);
+    }, 1000);
+  };
 };
